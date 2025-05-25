@@ -63,7 +63,7 @@ class CoarseColmapDataset(Dataset):
             # Load pairs: 
             with open(covis_pairs, 'r') as f:
                 self.pair_list = f.read().rstrip('\n').split('\n')
-
+        print(self.img_list)
         self.frame_ids = list(range(len(self.img_list)))
 
         # Load colmap coarse results:
@@ -253,7 +253,9 @@ class CoarseColmapDataset(Dataset):
         colmap_3d_states = {}
         # Build keypoints state and colmap 3D state.
         print('colmap point3d reading')
-        for point3D_id, point_3d in tqdm(colmap_3ds.items(), disable=not verbose):
+        import time
+        for point3D_id, point_3d in colmap_3ds.items():
+            start_time = time.time()
             print(point3D_id)
             observed_images = point_3d.image_ids.tolist()
 
@@ -294,7 +296,7 @@ class CoarseColmapDataset(Dataset):
                     colmap_images_state[assigned_img_id]['state'][assigned_point2D_idx] = point3D_id
                 else:
                     colmap_images_state[img_id]['state'][point2d_idx] = -3
-
+            print('readed one point: ', time.time()-start_time)
         # Get keyframes:
         keyframe_dict = {}
         for colmap_image_id, colmap_image_state in colmap_images_state.items():

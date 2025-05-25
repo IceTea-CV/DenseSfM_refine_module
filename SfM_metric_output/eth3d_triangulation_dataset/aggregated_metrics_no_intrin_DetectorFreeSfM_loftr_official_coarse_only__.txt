@@ -1,0 +1,52 @@
+===================================
+Metrics of: all scene
+*******************
+accuracy_0
+accuracy@0.01: 0.133707
+accuracy@0.02: 0.243749
+accuracy@0.05: 0.465527
+*******************
+*******************
+completeness_0
+completeness@0.01: 0.00253036
+completeness@0.02: 0.0184147
+completeness@0.05: 0.173333
+*******************
+*******************
+accuracy_1
+accuracy@0.01: 0.386826
+accuracy@0.02: 0.567844
+accuracy@0.05: 0.80891
+*******************
+*******************
+completeness_1
+completeness@0.01: 0.00482255
+completeness@0.02: 0.0275056
+completeness@0.05: 0.194838
+*******************
+===================================
+Metrics of: facade
+*******************
+accuracy_0
+accuracy@0.01: 0.133707
+accuracy@0.02: 0.243749
+accuracy@0.05: 0.465527
+*******************
+*******************
+completeness_0
+completeness@0.01: 0.00253036
+completeness@0.02: 0.0184147
+completeness@0.05: 0.173333
+*******************
+*******************
+accuracy_1
+accuracy@0.01: 0.386826
+accuracy@0.02: 0.567844
+accuracy@0.05: 0.80891
+*******************
+*******************
+completeness_1
+completeness@0.01: 0.00482255
+completeness@0.02: 0.0275056
+completeness@0.05: 0.194838
+*******************

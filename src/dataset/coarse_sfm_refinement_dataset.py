@@ -85,6 +85,7 @@ class CoarseColmapDataset(Dataset):
             osp.join(colmap_results_dir, "cameras.bin")
         )
 
+        print(self.frame_ids, self.img_list, self.colmap_images, only_basename_in_colmap)
         (
             self.frameId2colmapID_dict,
             self.colmapID2frameID_dict,
@@ -251,7 +252,9 @@ class CoarseColmapDataset(Dataset):
 
         colmap_3d_states = {}
         # Build keypoints state and colmap 3D state.
+        print('colmap point3d reading')
         for point3D_id, point_3d in tqdm(colmap_3ds.items(), disable=not verbose):
+            print(point3D_id)
             observed_images = point_3d.image_ids.tolist()
 
             intrins = []

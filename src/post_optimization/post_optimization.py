@@ -13,7 +13,7 @@ from ..dataset.coarse_sfm_refinement_dataset import CoarseColmapDataset
 from .matcher_model import *
 from .utils.write_fixed_images import fix_farest_images, fix_all_images
 from src.utils.colmap.eval_helper import get_best_colmap_index
-
+from ipdb import set_trace as bb
 
 cfgs = {
     "coarse_colmap_data": {
@@ -129,6 +129,7 @@ def post_optimization(
         else:
             cfgs["coarse_colmap_data"]['img_resize'] = img_resize
 
+        bb()
         # Construct scene data
         colmap_image_dataset = CoarseColmapDataset(
             cfgs["coarse_colmap_data"],
@@ -140,8 +141,6 @@ def post_optimization(
             vis_path=vis3d_pth if vis3d_pth is not None else None,
             verbose=verbose
         )
-        if set_return:
-            return 
 
         if cfgs['enable_update_reproj_kpts_to_model']:
             if i != 0:
@@ -158,6 +157,7 @@ def post_optimization(
         # Fine level match
         model_idx = 0 if i == 0 else 1
         rewindow_size_factor = i * 2
+        bb()
         fine_match_results = multiview_matcher(
             cfgs["fine_matcher"],
             cfgs["multiview_matcher_data"],
@@ -169,6 +169,7 @@ def post_optimization(
             ray_cfg=ray_cfg,
             verbose=verbose
         )
+        bb()
         if i != iter_n_times -1:
             current_model_dir = osp.join(osp.dirname(refined_model_save_dir), f'model_refined_{i}')
         else:

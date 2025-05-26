@@ -78,6 +78,7 @@ def post_optimization(
     refine_3D_pts_only=False,
     verbose=False,
     database_path=None,
+    set_return=True,
 ):
     """
     Iterative n times:
@@ -135,6 +136,9 @@ def post_optimization(
             vis_path=vis3d_pth if vis3d_pth is not None else None,
             verbose=verbose
         )
+        if set_return:
+            return 
+
         if cfgs['enable_update_reproj_kpts_to_model']:
             if i != 0:
                 # Leverage current model to update keypoints

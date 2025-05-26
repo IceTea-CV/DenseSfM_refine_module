@@ -50,9 +50,6 @@ def run_image_reregistration(
         ret = subprocess.call(cmd)
     else:
         ret_all = subprocess.run(cmd, capture_output=True)
-        print(ret_all)
-        from ipdb import set_trace as bb
-        bb()
         # with open(osp.join(after_refine_dir, 'reregistration_output.txt'), 'w') as f:
         #     f.write(ret_all.stdout.decode())
         ret = ret_all.returncode

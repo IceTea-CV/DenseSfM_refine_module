@@ -15,9 +15,12 @@ from ..data_construct import MatchingMultiviewData
 
 def build_model(args, rewindow_size_factor=None, model_idx=None):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    print('config load')
     config_path = os.path.join(BASE_DIR, "../../../", args['cfg_path'])
-
+    
     cfg = OmegaConf.load(config_path) # args['cfg_path'] if model_idx is not None else args['cfg_path'])
+    print('config done')
+
     pl.seed_everything(args['seed'])
     matcher_cfg = cfg['model']['multiview_refinement']
     if rewindow_size_factor is not None:
@@ -40,6 +43,7 @@ def build_model(args, rewindow_size_factor=None, model_idx=None):
     # load checkpoints
     model_path = args['weight_path']
     model_path = os.path.join(BASE_DIR, "../../../", model_path)
+    print('model load start', model_path)
     if model_path is not None:
         state_dict = torch.load(model_path, map_location="cpu")["state_dict"]
         logger.info(f"Load model from path: {args['weight_path']}")
@@ -57,6 +61,7 @@ def build_model(args, rewindow_size_factor=None, model_idx=None):
         matcher.load_state_dict(state_dict, strict=True)
     else:
         logger.warning(f"Model path is None!")
+    print('model load done')
     return matcher
 
 @torch.no_grad()

@@ -77,7 +77,6 @@ def run_incremental_model_refiner(
         logging.info(' '.join(cmd))
         ret = subprocess.call(cmd)
     else:
-        from pdb import set_trace as bb
         ret_all = subprocess.run(cmd, capture_output=True)
         # with open(osp.join(after_refine_dir, 'incremental_model_refiner_output.txt'), 'w') as f:
         #     f.write(ret_all.stdout.decode())

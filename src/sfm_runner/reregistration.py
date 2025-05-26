@@ -4,7 +4,7 @@ import subprocess
 import os.path as osp
 
 from pathlib import Path
-
+import time
 
 def run_image_reregistration(
     deep_sfm_dir, after_refine_dir, colmap_path, image_path="/", colmap_configs=None, verbose=True
@@ -50,12 +50,12 @@ def run_image_reregistration(
         ret = subprocess.call(cmd)
     else:
         ret_all = subprocess.run(cmd, capture_output=True)
-        with open(osp.join(after_refine_dir, 'reregistration_output.txt'), 'w') as f:
-            f.write(ret_all.stdout.decode())
+        # with open(osp.join(after_refine_dir, 'reregistration_output.txt'), 'w') as f:
+        #     f.write(ret_all.stdout.decode())
         ret = ret_all.returncode
 
     if ret != 0:
-        logging.warning("Problem with image registration, existing.")
+        print("Problem with image registration, existing.")
         exit(ret)
 
 

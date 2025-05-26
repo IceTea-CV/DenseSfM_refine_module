@@ -71,7 +71,7 @@ if __name__ == "__main__":
         only_basename_in_colmap=True,
         fine_match_use_ray=False,
         ray_cfg=None,
-        colmap_configs=colmap_configs,
+        colmap_configs=base_colmap_configs,
         refine_iter_n_times=neural_sfm_configs["refine_iter_n_times"],
         refine_3D_pts_only=neural_sfm_configs["triangulation_mode"],
     )

@@ -124,7 +124,6 @@ def post_optimization(
         else:
             cfgs["coarse_colmap_data"]['img_resize'] = img_resize
 
-        print("Scene data construct start!")
         # Construct scene data
         colmap_image_dataset = CoarseColmapDataset(
             cfgs["coarse_colmap_data"],
@@ -136,7 +135,6 @@ def post_optimization(
             vis_path=vis3d_pth if vis3d_pth is not None else None,
             verbose=verbose
         )
-        print("Scene data construct finish!")
 
         if cfgs['enable_update_reproj_kpts_to_model']:
             if i != 0:
@@ -151,7 +149,6 @@ def post_optimization(
             return state, None, None
 
         # Fine level match
-        print("Multi-view refinement matching begin!")
         model_idx = 0 if i == 0 else 1
         rewindow_size_factor = i * 2
         fine_match_results = multiview_matcher(
@@ -165,7 +162,6 @@ def post_optimization(
             ray_cfg=ray_cfg,
             verbose=verbose
         )
-        print("Multi-view refinement matching done!")
 
         if i != iter_n_times -1:
             current_model_dir = osp.join(osp.dirname(refined_model_save_dir), f'model_refined_{i}')
@@ -177,7 +173,6 @@ def post_optimization(
         colmap_refined_kpts_dir = osp.join(osp.dirname(refined_model_save_dir), 'temp_refined_kpts')
         Path(colmap_refined_kpts_dir).mkdir(parents=True, exist_ok=True)
         colmap_image_dataset.update_refined_kpts_to_colmap_multiview(fine_match_results)
-        print("Multi-view refinement matching saved!") 
 
         if i == 0:
             if osp.exists(osp.join(colmap_refined_kpts_dir, 'database.db')):
@@ -196,12 +191,10 @@ def post_optimization(
         colmap_image_dataset.save_colmap_model(osp.join(colmap_refined_kpts_dir, 'model'))
 
         # Refinement:
-        print("Multi-view refinement BA with colmap start")
         
         cfgs['incremental_refiner_filter_thresholds'] = incremental_refiner_filter_thresholds
         filter_threshold = cfgs['incremental_refiner_filter_thresholds'][i] if i < len(cfgs['incremental_refiner_filter_thresholds'])-1 else cfgs['incremental_refiner_filter_thresholds'][-1]
         success = sfm_model_geometry_refiner.main(colmap_refined_kpts_dir, current_model_dir, no_filter_pts=cfgs["model_refiner_no_filter_pts"], colmap_configs=colmap_configs, image_path=temp_image_path, verbose=verbose, refine_3D_pts_only=refine_3D_pts_only, filter_threshold=filter_threshold, use_pba=cfgs["incremental_refiner_use_pba"])
-        print("Multi-view refinement BA with colmap end")
         if not success:
             # Refine failed scenario, use the coarse model instead.
             os.system(f"cp {osp.join(colmap_refined_kpts_dir, 'model') + '/*'} {current_model_dir}")
@@ -210,7 +203,6 @@ def post_optimization(
         os.makedirs(osp.join(colmap_refined_kpts_dir, 'model'), exist_ok=True)
         os.system(f"cp {current_model_dir+'/*'} {osp.join(colmap_refined_kpts_dir, 'model')}")
         
-        print("Multi-view model saved")
         
         # Re-registration:
         if i % 2 == 0 and not refine_3D_pts_only:

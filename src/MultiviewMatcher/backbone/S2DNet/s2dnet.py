@@ -109,6 +109,7 @@ class S2DNet(BaseModel):
             self.output_dims = self.output_dims[:1]
             self.scales = self.scales[:1]
 
+        """        
         if conf.pretrained == 's2dnet':
             path = Path(__file__).parent / "checkpoints" / 's2dnet_weights.pth'
             logger.info(f'Loading S2DNet checkpoint at {path}.')
@@ -123,7 +124,7 @@ class S2DNet(BaseModel):
             state_dict = {k: v for k, v in state_dict.items()
                           if k in params.keys() and v.shape == params[k].shape}
             self.load_state_dict(state_dict, strict=True)
-
+        """
     def _forward(self, image: torch.Tensor, scales=None, sparse=True, sample_points=None, sample_pts_bids=None) -> List[torch.Tensor]:
         """
         image: B * C * H * W

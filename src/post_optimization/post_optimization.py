@@ -135,7 +135,8 @@ def post_optimization(
             vis_path=vis3d_pth if vis3d_pth is not None else None,
             verbose=verbose
         )
-
+        print("Scene reconstruction Done")
+        print(cfgs['enable_update_reproj_kpts_to_model'])
         if cfgs['enable_update_reproj_kpts_to_model']:
             if i != 0:
                 # Leverage current model to update keypoints
@@ -151,6 +152,7 @@ def post_optimization(
         # Fine level match
         model_idx = 0 if i == 0 else 1
         rewindow_size_factor = i * 2
+        print("multiview matcher start")
         fine_match_results = multiview_matcher(
             cfgs["fine_matcher"],
             cfgs["multiview_matcher_data"],

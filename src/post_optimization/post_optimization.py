@@ -135,8 +135,6 @@ def post_optimization(
             vis_path=vis3d_pth if vis3d_pth is not None else None,
             verbose=verbose
         )
-        print("Scene reconstruction Done")
-        print(cfgs['enable_update_reproj_kpts_to_model'])
         if cfgs['enable_update_reproj_kpts_to_model']:
             if i != 0:
                 # Leverage current model to update keypoints
@@ -164,7 +162,7 @@ def post_optimization(
             ray_cfg=ray_cfg,
             verbose=verbose
         )
-
+        print("multiview matcher end")
         if i != iter_n_times -1:
             current_model_dir = osp.join(osp.dirname(refined_model_save_dir), f'model_refined_{i}')
         else:

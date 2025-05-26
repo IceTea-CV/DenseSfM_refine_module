@@ -65,7 +65,10 @@ def extract_results(
     matcher=None,
 ):
     # 1. inference
+    print('matcher inference start')
     matcher(data)
+    print('matcher inference done')
+    
     # 2. extract match and refined poses
     reference_points_refined = data['query_points_refined'].cpu().numpy() # 1 * n_track * 2
     reference_img_ids = data['query_img_ids'].cpu().numpy() # 1 * n_track
@@ -115,7 +118,9 @@ class UpdatedQueryPts:
 def matchWorker(colmap_dataset, matcher, subset_track_idxs=None, visualize=False, visualize_dir=None, pba: ActorHandle = None, dataset_cfgs=None, verbose=True):
     """extract matches from part of the possible image pair permutations"""
 
+    print('data initialized start')
     multiview_matching_dataset = MatchingMultiviewData(colmap_dataset, dataset_cfgs, worker_split_idxs=subset_track_idxs)
+    print('data initialized end')
     dataloader = DataLoader(multiview_matching_dataset, num_workers=4, pin_memory=True)
     
     matcher.cuda()
@@ -125,15 +130,18 @@ def matchWorker(colmap_dataset, matcher, subset_track_idxs=None, visualize=False
     if not verbose:
         assert pba is None
     
-    for data in tqdm(dataloader, disable=not verbose):
+    for data in dataloader:
         query_updated_buffer.find_movable_and_update(data)
         data_c = dict_to_cuda(data)
-
+        print('extract start')
         [query_points_refined, query_img_ids, query_pt2D_idxs], [ref_points_refined, ref_img_ids, ref_pt2D_idxs], time = extract_results(
             data_c, matcher=matcher
         )
+        print('extract done')
+        print('update start')
         query_updated_buffer.update_query_pts(ref_points_refined, ref_img_ids, ref_pt2D_idxs)
-
+        print('update done')
+        
         # 3. extract results
         points2D_refined = np.concatenate([query_points_refined, ref_points_refined], axis=0)
         img_ids = np.concatenate([query_img_ids, ref_img_ids], axis=0)

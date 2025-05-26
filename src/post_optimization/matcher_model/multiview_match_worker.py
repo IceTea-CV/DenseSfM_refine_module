@@ -15,11 +15,9 @@ from ..data_construct import MatchingMultiviewData
 
 def build_model(args, rewindow_size_factor=None, model_idx=None):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    print('config load')
     config_path = os.path.join(BASE_DIR, "../../../", args['cfg_path'])
-    # cfg = OmegaConf.load(config_path) # args['cfg_path'] if model_idx is not None else args['cfg_path'])
-    cfg = args['cfg_dict']
-    print('config done')
+    cfg = OmegaConf.load(config_path) # args['cfg_path'] if model_idx is not None else args['cfg_path'])
+    # cfg = args['cfg_dict']
 
     pl.seed_everything(args['seed'])
     matcher_cfg = cfg['model']['multiview_refinement']
@@ -43,7 +41,6 @@ def build_model(args, rewindow_size_factor=None, model_idx=None):
     # load checkpoints
     model_path = args['weight_path']
     model_path = os.path.join(BASE_DIR, "../../../", model_path)
-    print('model load start', model_path)
     if model_path is not None:
         state_dict = torch.load(model_path, map_location="cpu")["state_dict"]
         logger.info(f"Load model from path: {args['weight_path']}")
@@ -61,7 +58,6 @@ def build_model(args, rewindow_size_factor=None, model_idx=None):
         matcher.load_state_dict(state_dict, strict=True)
     else:
         logger.warning(f"Model path is None!")
-    print('model load done')
     return matcher
 
 @torch.no_grad()
@@ -70,9 +66,7 @@ def extract_results(
     matcher=None,
 ):
     # 1. inference
-    print('matcher inference start')
     matcher(data)
-    print('matcher inference done')
     
     # 2. extract match and refined poses
     reference_points_refined = data['query_points_refined'].cpu().numpy() # 1 * n_track * 2
@@ -123,9 +117,7 @@ class UpdatedQueryPts:
 def matchWorker(colmap_dataset, matcher, subset_track_idxs=None, visualize=False, visualize_dir=None, pba: ActorHandle = None, dataset_cfgs=None, verbose=True):
     """extract matches from part of the possible image pair permutations"""
 
-    print('data initialized start')
     multiview_matching_dataset = MatchingMultiviewData(colmap_dataset, dataset_cfgs, worker_split_idxs=subset_track_idxs)
-    print('data initialized end')
     dataloader = DataLoader(multiview_matching_dataset, num_workers=4, pin_memory=True)
     
     matcher.cuda()
@@ -138,14 +130,10 @@ def matchWorker(colmap_dataset, matcher, subset_track_idxs=None, visualize=False
     for data in dataloader:
         query_updated_buffer.find_movable_and_update(data)
         data_c = dict_to_cuda(data)
-        print('extract start')
         [query_points_refined, query_img_ids, query_pt2D_idxs], [ref_points_refined, ref_img_ids, ref_pt2D_idxs], time = extract_results(
             data_c, matcher=matcher
         )
-        print('extract done')
-        print('update start')
         query_updated_buffer.update_query_pts(ref_points_refined, ref_img_ids, ref_pt2D_idxs)
-        print('update done')
         
         # 3. extract results
         points2D_refined = np.concatenate([query_points_refined, ref_points_refined], axis=0)
@@ -162,8 +150,8 @@ def matchWorker(colmap_dataset, matcher, subset_track_idxs=None, visualize=False
     if len(running_time) != 0:
         logger.warning(f"Current each part running time evaluation does not support multiple workers.")
         time_each_part = np.array(running_time) # N * m, m is number of parts
-        print(f"Mean time of each part is: {np.mean(time_each_part, axis=0)}")
-        print(f"Total time of each part is: {np.sum(time_each_part, axis=0)}")
+        # print(f"Mean time of each part is: {np.mean(time_each_part, axis=0)}")
+        # print(f"Total time of each part is: {np.sum(time_each_part, axis=0)}")
     return results_list
 
 @ray.remote(num_cpus=1, num_gpus=0.25, max_calls=1)  # release gpu after finishing

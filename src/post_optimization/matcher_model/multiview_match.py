@@ -9,9 +9,7 @@ from pdb import set_trace as bb
 
 
 def multiview_matcher(cfgs, dataset_cfgs, colmap_image_dataset, rewindow_size_factor=None, model_idx=None, visualize_dir=None, use_ray=False, ray_cfg=None, verbose=True):
-    print('model build start')
     matcher = build_model(cfgs["model"], rewindow_size_factor, model_idx)
-    print('model build end')
     
     if not use_ray:
         fine_match_results = matchWorker(

@@ -17,8 +17,8 @@ def build_model(args, rewindow_size_factor=None, model_idx=None):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     print('config load')
     config_path = os.path.join(BASE_DIR, "../../../", args['cfg_path'])
-    
-    cfg = OmegaConf.load(config_path) # args['cfg_path'] if model_idx is not None else args['cfg_path'])
+    # cfg = OmegaConf.load(config_path) # args['cfg_path'] if model_idx is not None else args['cfg_path'])
+    cfg = args['cfg_dict']
     print('config done')
 
     pl.seed_everything(args['seed'])

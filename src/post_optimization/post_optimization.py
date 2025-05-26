@@ -65,6 +65,7 @@ def post_optimization(
     chunk_size=6000,
     matcher_model_path=None,
     matcher_cfg_path=None,
+    matcher_cfg_dict=None,
     img_resize=None,
     img_preload=False,
     fine_match_use_ray=False,  # Use ray for fine match
@@ -96,6 +97,9 @@ def post_optimization(
     cfgs['refine_iter_n_times'] = refine_iter_n_times
     if matcher_cfg_path is not None:
         cfgs['fine_matcher']['model']['cfg_path'] = matcher_cfg_path
+    if matcher_cfg_dict is not None:
+        cfgs['fine_matcher']['model']['cfg_dict'] = matcher_cfg_dict
+        
     if matcher_model_path is not None:
         cfgs['fine_matcher']['model']['weight_path'] = matcher_model_path
     

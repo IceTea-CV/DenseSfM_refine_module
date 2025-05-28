@@ -55,7 +55,7 @@ class MultiviewMatcher(nn.Module):
         self.backbone_pretrained = self.config["backbone"]["pretrained"]
         if self.backbone_pretrained is not None:
             logger.info(f"Load pretrained backbone from {self.backbone_pretrained}")
-            ckpt = torch.load(self.backbone_pretrained, "cpu")["state_dict"]
+            ckpt = torch.load(self.backbone_pretrained, "cpu", weights_only=False)["state_dict"]
             for k in list(ckpt.keys()):
                 if "backbone" in k:
                     newk = k[k.find("backbone") + len("backbone") + 1 :]

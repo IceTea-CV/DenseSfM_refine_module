@@ -1,4 +1,4 @@
-neural_sfm_configs = {'triangulation_mode': False, 'NEUSFM_enable_post_optimization': False, 'NEUSFM_refinement_chunk_size': 2000, \
+neural_sfm_configs = {'triangulation_mode': False, 'NEUSFM_enable_post_optimization': False, 'NEUSFM_refinement_chunk_size': 500, \
 'NEUSFM_fine_match_model_path': 'save_weight/dim7.ckpt', 'NEUSFM_fine_match_cfg_path': 'hydra_training_configs/experiment/multiview_refinement_matching.yaml', \
 'n_images': None, 'img_resize': 1200, 'img_preload': False, 'down_sample_ratio': 1, 'img_pair_strategy': 'edge_index', 'INDEX_num_of_pair': None, 'img_retrival_method': None, 'refine_iter_n_times': 2}
 

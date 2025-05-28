@@ -235,6 +235,7 @@ temp/
 visual/
 .hydra
 weight
+save_weight
 outputs
 logs
 checkpoints

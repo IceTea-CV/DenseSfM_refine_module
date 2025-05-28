@@ -42,7 +42,7 @@ def build_model(args, rewindow_size_factor=None, model_idx=None):
     model_path = args['weight_path']
     model_path = os.path.join(BASE_DIR, "../../../", model_path)
     if model_path is not None:
-        state_dict = torch.load(model_path, map_location="cpu")["state_dict"]
+        state_dict = torch.load(model_path, map_location="cpu", weights_only=False)["state_dict"]
         logger.info(f"Load model from path: {args['weight_path']}")
         for k in list(state_dict.keys()):
             if "matcher." in k:

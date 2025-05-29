@@ -80,6 +80,7 @@ def post_optimization(
     verbose=False,
     database_path=None,
     set_return=True,
+    use_pycolmap=True
 ):
     """
     Iterative n times:
@@ -197,7 +198,8 @@ def post_optimization(
         # Refinement:
         cfgs['incremental_refiner_filter_thresholds'] = incremental_refiner_filter_thresholds
         filter_threshold = cfgs['incremental_refiner_filter_thresholds'][i] if i < len(cfgs['incremental_refiner_filter_thresholds'])-1 else cfgs['incremental_refiner_filter_thresholds'][-1]
-        success = sfm_model_geometry_refiner.main(colmap_refined_kpts_dir, current_model_dir, no_filter_pts=cfgs["model_refiner_no_filter_pts"], colmap_configs=colmap_configs, image_path=temp_image_path, verbose=verbose, refine_3D_pts_only=refine_3D_pts_only, filter_threshold=filter_threshold, use_pba=cfgs["incremental_refiner_use_pba"])
+        success = sfm_model_geometry_refiner.main(colmap_refined_kpts_dir, current_model_dir, no_filter_pts=cfgs["model_refiner_no_filter_pts"], colmap_configs=colmap_configs, image_path=temp_image_path, verbose=verbose, \
+            refine_3D_pts_only=refine_3D_pts_only, filter_threshold=filter_threshold, use_pba=cfgs["incremental_refiner_use_pba"], use_pycolmap=use_pycolmap)
         if not success:
             # Refine failed scenario, use the coarse model instead.
             os.system(f"cp {osp.join(colmap_refined_kpts_dir, 'model') + '/*'} {current_model_dir}")
@@ -208,8 +210,9 @@ def post_optimization(
         
         
         # Re-registration:
-        if i % 2 == 0 and not refine_3D_pts_only:
-            reregistration.main(colmap_refined_kpts_dir, current_model_dir, colmap_configs=colmap_configs, verbose=verbose)
+        if i ==0 and not refine_3D_pts_only: # i % 2 == 0 and not refine_3D_pts_only:
+            reregistration.main(colmap_refined_kpts_dir, current_model_dir, colmap_configs=colmap_configs, \
+               verbose=verbose, image_path=temp_image_path, use_pycolmap=use_pycolmap)
 
     os.system("rm -r {}".format(colmap_refined_kpts_dir))
     os.system("rm -r {}".format(temp_image_path))
